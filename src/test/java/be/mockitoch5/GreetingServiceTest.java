@@ -1,11 +1,11 @@
-package test.java.mockitoch5;
+package be.mockitoch5;
 
-import main.java.mockitoch5.GreetingService;
-import main.java.mockitoch5.Hello;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class GreetingServiceTest {
     private GreetingService greeting;
@@ -20,11 +20,13 @@ public class GreetingServiceTest {
     @Test
     public void testGreet() {
         //prepare mock
-        when(helloMock.sayHello("World").thenReturn("Hello World"));
+        when(helloMock.sayHello("World")).thenReturn("Hello World");
         //execute test
         String answer = greeting.greet("World");
         assertEquals("Greeting message: Hello World",answer);
     }
+
+
 
 
 }
