@@ -3,6 +3,7 @@ package be.mockitoch5;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
@@ -11,8 +12,7 @@ import org.mockito.stubbing.Answer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class GreetingServiceTestMockExt {
@@ -88,6 +88,49 @@ public class GreetingServiceTestMockExt {
         //greeting.greet(null);
         assertThrows(NullPointerException.class, ()->greeting.greet(null));
 
+    }
+
+    @Test
+    public void testGreetVerifyTime() {
+        //prep
+        when(helloMock.sayHello("World")).thenReturn("Hello World");
+        //exec
+        greeting.greet("World");
+        //verify mock
+        verify(helloMock, timeout(10)).sayHello("World");
+    }
+
+    @Test
+    public void testGreetVerifyTimes() {
+        //prep
+        when(helloMock.sayHello("World")).thenReturn("Hello World");
+        //exec
+        greeting.greet("World");
+        greeting.greet("World");
+        greeting.greet("boo");
+        //verify
+        verify(helloMock,times(2)).sayHello("World");
+        verify(helloMock,times(1)).sayHello("boo");
+    }
+
+    @Test
+    public void testGreetVerifyOrder(){
+        //prep
+        when(helloMock.sayHello("World")).thenReturn("Hello World");
+        //exec
+        greeting.greet("World");
+        greeting.greet("Mars");
+        //veri
+        InOrder inorder = inOrder(helloMock);
+        inorder.verify(helloMock).sayHello("World");
+        inorder.verify(helloMock).sayHello("Mars");
+    }
+
+    @Test
+    public void testGreetVerifyArguments() {
+      when(helloMock.sayHello(any())).then(invocationOnMock -> "Hello " + invocationOnMock.getArgument(0));
+      greeting.greet("Moon");
+      verify(helloMock).sayHello(any());
     }
 
 
